@@ -11,16 +11,14 @@
 例如跳转页面只需要调用如下语句即可，并且传递了参数。
 
 ````
-
-        Max max = new Max();
-
-        IService iService = max.create(IService.class);
-
-        iService.jump2ScrollingActivity(0,"123");
+    RouteApi routeApi = Pitaya.create(RouteApi.class);
+    routeApi.requestTestModule(123456, MainActivity.this)
+            .subscribe(new Consumer<ResultWrapper>() {
+                @Override
+                public void accept(ResultWrapper resultWrapper) throws Exception {
+                    Toast.makeText(MainActivity.this, resultWrapper + "", Toast.LENGTH_LONG).show();
+                }
+            });
 
 
 ````
-
-这是一个写了两天的一个小项目，但是这个想法在之前就有了，再次感谢ARouter的作者（真正的大神），接下来的工作，日后会多看看Retrofit的设计思路，完善这个项目
-
-具体的使用，在这几天会进行更新,Comming soon! 
