@@ -10,8 +10,7 @@ import io.github.keep2iron.pitaya.compiler.utils.Const;
  * @version 1.0
  * @since 2017/07/08 15:14
  *
- * @Aurowired(name = 'mark') String mark;
- *
+ * Aurowired(name = 'mark') String mark;
  * name = 'EXTRA_STRING_MARK' value = 'mark' type = 'String';
  */
 public class ExtraUtils {
