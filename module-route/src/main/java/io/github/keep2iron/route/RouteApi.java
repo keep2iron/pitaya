@@ -24,6 +24,7 @@ public interface RouteApi {
      * 跳转testModule的MainActivity
      *
      * @param requestCode 跳转的一个数据
+     * @param activity    需要传入的Activity因为需要
      * @return
      */
     @RouteUri(path = MODULE_TEST.Route.TEST_ACTIVITY)
