@@ -1,0 +1,90 @@
+/**
+ * Shared file between builds so that they can all use the same dependencies and
+ * maven repositories.
+ **/
+ext.deps = [:]
+def versions = [:]
+versions.gradle_plugin_version = "3.0.0"
+versions.gradle_maven_version = "1.5"
+versions.support_version = "26.0.2"
+versions.orange_version = "0.0.4"
+versions.javapoet = "1.8.0"
+versions.auto_service = "1.0-rc2"
+versions.rxjava2 = "2.1.3"
+versions.rx_android = "2.0.1"
+versions.router = "1.2.1"
+versions.router_compiler = "1.0.3"
+
+deps = [:]
+//deps.pitaya_annotation = "com.github.keep2iron.orange:orange-annotations:$versions.orange_version"
+//deps.pitaya_api = "com.github.keep2iron.orange:orange-api:$versions.orange_version"
+//deps.pitaya_compiler = "com.github.keep2iron.orange:orange-compiler:$versions.orange_version"
+
+deps.java_poet = "com.squareup:javapoet:$versions.javapoet"
+deps.auto_service = "com.google.auto.service:auto-service:$versions.auto_service"
+
+deps.android_support_annotations = "com.android.support:support-annotations:$versions.support_version"
+deps.android_recycler_view = "com.android.support:recyclerview-v7:$versions.support_version"
+
+deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.gradle_plugin_version"
+deps.gradle_maven_plugin = "com.github.dcendents:android-maven-gradle-plugin:$versions.gradle_maven_version"
+
+deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
+deps.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
+ext.deps = deps
+
+def router = [:]
+router.api = "com.alibaba:arouter-api:$versions.router"
+router.compiler = "com.alibaba:arouter-compiler:$versions.router_compiler"
+router.annotation = "'com.alibaba:arouter-annotation:$versions.router_compiler'"
+deps.router = router
+
+def pitaya = [:]
+pitaya.annotation = ':pitaya-annotations'
+pitaya.api = ':pitaya-api'
+pitaya.compiler = ':pitaya-compiler'
+deps.pitaya = pitaya
+
+def support = [:]
+support.app_compat = "com.android.support:appcompat-v7:$versions.support_version"
+support.fragment = "com.android.support:support-fragment:$versions.support_version"
+deps.support = support
+
+/**
+ * 添加火龙果注解框架
+ * @param handler
+ * @param isUseKotlin
+ * @return
+ */
+def addPitaya(DependencyHandler handler, boolean isUseKotlin = false,Project project) {
+    handler.add("implementation", project.project(deps.pitaya.api)){
+        exclude group: 'com.android.support'
+    }
+    handler.add(isUseKotlin ? "kapt" : "annotationProcessor", project.project(deps.pitaya.compiler))
+}
+ext.addPitaya = this.&addPitaya
+
+/**
+ * 添加Maven
+ */
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.maven { url "https://jitpack.io" }
+    handler.mavenCentral()
+}
+ext.addRepos = this.&addRepos
+
+/**
+ * 添加ARouter
+ * @param handler
+ * @param isUseKotlin
+ * @return
+ */
+//def addRouter(DependencyHandler handler, boolean isUseKotlin = false) {
+//    handler.add("implementation", deps.router.api) {
+//        exclude group: 'com.android.support'
+//    }
+//    handler.add(isUseKotlin ? "kapt" : "annotationProcessor", deps.router.compiler)
+//}
+//ext.addRouter = this.&addRouter

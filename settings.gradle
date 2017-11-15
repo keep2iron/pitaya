@@ -1,0 +1,1 @@
+include ':module-main', ':pitaya-compiler', ':module-test', ':pitaya-api', ':pitaya-annotation', ':module-route'

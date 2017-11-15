@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+dependencies {
+    implementation deps.java_poet
+    implementation deps.auto_service
+    implementation 'org.apache.commons:commons-lang3:3.4'
+    implementation 'org.apache.commons:commons-collections4:4.1'
+
+    implementation project(':pitaya-annotation')
+}
