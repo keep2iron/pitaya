@@ -148,7 +148,7 @@ public class RouteProcessor extends AbstractProcessor {
             } catch (Exception e) {
                 logger.error(e);
             }
-            return true;
+            return false;
         }
 
         return false;

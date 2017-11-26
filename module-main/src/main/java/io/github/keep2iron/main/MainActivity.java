@@ -27,6 +27,7 @@ import io.reactivex.functions.Consumer;
 @Route(path = "/main/main_activity")
 public class MainActivity extends Activity {
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 RouteApi routeApi = Pitaya.create(RouteApi.class);
+
                 routeApi.requestTestModule(123456, MainActivity.this)
                         .subscribe(new Consumer<ResultWrapper>() {
                             @Override

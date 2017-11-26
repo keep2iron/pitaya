@@ -55,6 +55,8 @@ public class Pitaya {
                         if (activity != null) {
                             int requestCode = uri.requestCode() == -1 ? DEFAULT_REQUEST_CODE : uri.requestCode();
                             return startActivityForResult(activity, postcard, requestCode);
+                        }else{
+                            postcard.navigation();
                         }
 
                         return Observable.empty();
