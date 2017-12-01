@@ -48,6 +48,7 @@ deps.pitaya = pitaya
 def support = [:]
 support.app_compat = "com.android.support:appcompat-v7:$versions.support_version"
 support.fragment = "com.android.support:support-fragment:$versions.support_version"
+support.recyclerview = "com.android.support:recyclerview-v7:$versions.support_version"
 deps.support = support
 
 /**

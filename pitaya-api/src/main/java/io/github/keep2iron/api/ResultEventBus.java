@@ -1,5 +1,7 @@
 package io.github.keep2iron.api;
 
+import android.app.Activity;
+
 import io.reactivex.Observable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
@@ -16,11 +18,11 @@ public class ResultEventBus {
     private ResultEventBus() {
     }
 
-    public Observable<ResultWrapper> filter(final int requestCode){
+    public Observable<ResultWrapper> filter(final int requestCode) {
         return mSubject.filter(new Predicate<ResultWrapper>() {
             @Override
             public boolean test(ResultWrapper resultWrapper) throws Exception {
-                return requestCode == resultWrapper.mRequestCode;
+                return requestCode == resultWrapper.mRequestCode && resultWrapper.mResultCode == Activity.RESULT_OK;
             }
         });
     }

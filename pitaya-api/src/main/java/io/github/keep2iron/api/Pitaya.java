@@ -1,23 +1,40 @@
 package io.github.keep2iron.api;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.SelectionSpecBuilder;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.zhihu.matisse.filter.Filter;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import io.github.keep2iron.api.fragment.AppFragment;
 import io.github.keep2iron.api.fragment.SupportFragment;
+import io.github.keep2iron.api.matisse.GifSizeFilter;
+import io.github.keep2iron.api.matisse.IPhotoSelector;
+import io.github.keep2iron.api.matisse.MatisseSupportFragment;
 import io.github.keep2iron.pitaya.annntation.Extra;
 import io.github.keep2iron.pitaya.annntation.RouteUri;
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 /**
  * @author keep2iron <a href="http://keep2iron.github.io">Contract me.</a>
@@ -55,7 +72,7 @@ public class Pitaya {
                         if (activity != null) {
                             int requestCode = uri.requestCode() == -1 ? DEFAULT_REQUEST_CODE : uri.requestCode();
                             return startActivityForResult(activity, postcard, requestCode);
-                        }else{
+                        } else {
                             postcard.navigation();
                         }
 
@@ -161,7 +178,6 @@ public class Pitaya {
         }
 
 
-
         return activity;
     }
 
@@ -177,5 +193,83 @@ public class Pitaya {
         }
     }
 
+    public static <T extends IPhotoSelector> T createPhotoService(final Class<T> service) {
+        validateServiceInterface(service);
 
+        return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[]{service},
+                new InvocationHandler() {
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        Activity activity = (Activity) args[0];
+                        Resources resources = activity.getResources();
+                        Set<MimeType> mimeTypes;
+                        SelectionSpecBuilder builder;
+                        MatisseSupportFragment supportFragment;
+
+                        Matisse matisse;
+
+                        if (activity instanceof FragmentActivity) {
+                            supportFragment = MatisseSupportFragment.getInstance(BUS);
+                        } else {
+                            throw new IllegalArgumentException("please make activity extends FragmentActivity");
+                        }
+
+                        FragmentActivity fragmentActivity = (FragmentActivity) activity;
+                        FragmentManager manager = fragmentActivity.getSupportFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(android.R.id.content, supportFragment);
+                        transaction.commitAllowingStateLoss();
+
+                        matisse = Matisse.from(supportFragment);
+                        Class<? extends Matisse> matisseClass = matisse.getClass();
+                        Field mMatisse = matisseClass.getDeclaredField("mContext");
+                        mMatisse.setAccessible(true);
+                        mMatisse.set(matisse, new WeakReference<>(activity));
+
+                        boolean haveMimeType = args.length > 1;
+                        if (haveMimeType) {
+                            Object arg = args[1];
+                            if (arg instanceof Set) {
+                                mimeTypes = (Set<MimeType>) arg;
+                            } else {
+                                mimeTypes = new HashSet<>();
+                                mimeTypes.add((MimeType) arg);
+                            }
+                        } else {
+                            mimeTypes = MimeType.allOf();
+                        }
+
+                        boolean haveSelectionSpecBuilderArg = args.length > 2;
+                        if (haveSelectionSpecBuilderArg) {
+                            builder = (SelectionSpecBuilder) args[2];
+
+                            Class<? extends SelectionSpecBuilder> builderClass = builder.getClass();
+                            Field matisseField = builderClass.getDeclaredField("mMatisse");
+                            matisseField.setAccessible(true);
+                            matisseField.set(builder, matisse);
+                        } else {
+                            builder = matisse.choose(mimeTypes);
+
+                            builder.countable(true)
+                                    .maxSelectable(9)
+                                    .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+                                    .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
+                                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                                    .thumbnailScale(0.85f)
+                                    .imageEngine(new GlideEngine());
+                        }
+                        supportFragment.forResult(builder);
+
+                        return BUS.filter(supportFragment.getRequestCode())
+                                .map(new Function<ResultWrapper, List<Uri>>() {
+                                    @Override
+                                    public List<Uri> apply(ResultWrapper resultWrapper) throws Exception {
+                                        List<Uri> uris = Matisse.obtainResult(resultWrapper.mIntent);
+                                        return uris;
+                                    }
+                                });
+                    }
+                }
+        );
+    }
 }

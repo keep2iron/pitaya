@@ -2,6 +2,8 @@ package io.github.keep2iron.main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +13,18 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.gengqiquan.result.Result;
-import com.gengqiquan.result.RxActivityResult;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.zhihu.matisse.filter.Filter;
+
+import java.util.Arrays;
+import java.util.List;
 
 import io.github.keep2iron.api.Pitaya;
 import io.github.keep2iron.api.ResultWrapper;
+import io.github.keep2iron.api.matisse.GifSizeFilter;
+import io.github.keep2iron.api.matisse.IPhotoSelector;
 import io.github.keep2iron.route.RouteApi;
 import io.reactivex.functions.Consumer;
 
@@ -25,7 +34,7 @@ import io.reactivex.functions.Consumer;
  * @since 2017/11/14 11:01
  */
 @Route(path = "/main/main_activity")
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
 
     @Override
@@ -49,5 +58,26 @@ public class MainActivity extends Activity {
                         });
             }
         });
+
+        IPhotoSelector photoService = Pitaya.createPhotoService(IPhotoSelector.class);
+        photoService.requestPhotoSelector(this)
+                .subscribe(new Consumer<List<Uri>>() {
+                    @Override
+                    public void accept(List<Uri> uris) throws Exception {
+                        Log.e("tag", "uris " + uris);
+                        Log.e("tag", "uris " + uris.size());
+                    }
+                });
+
+//        Matisse.from(MainActivity.this)
+//                .choose(MimeType.allOf())
+//                .countable(true)
+//                .maxSelectable(9)
+//                .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+//                .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+//                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+//                .thumbnailScale(0.85f)
+//                .imageEngine(new GlideEngine())
+//                .forResult(123);
     }
 }

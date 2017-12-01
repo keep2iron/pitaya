@@ -31,12 +31,15 @@ dependencies {
     implementation deps.support.app_compat
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
+    implementation deps.support.recyclerview
+
     implementation deps.rxjava2
 
     implementation project(':module-test')
     implementation project(':module-route')
 
-    compile 'com.gengqiquan:Rx2ActivityResult:0.0.4'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
 }
 
 apply from: '../version.gradle'
