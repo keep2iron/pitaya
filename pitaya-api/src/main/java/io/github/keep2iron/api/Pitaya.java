@@ -203,9 +203,8 @@ public class Pitaya {
                         Activity activity = (Activity) args[0];
                         Resources resources = activity.getResources();
                         Set<MimeType> mimeTypes;
-                        SelectionSpecBuilder builder;
                         MatisseSupportFragment supportFragment;
-
+                        int max = 1;
                         Matisse matisse;
 
                         if (activity instanceof FragmentActivity) {
@@ -231,33 +230,31 @@ public class Pitaya {
                             Object arg = args[1];
                             if (arg instanceof Set) {
                                 mimeTypes = (Set<MimeType>) arg;
-                            } else {
+                            } else if(arg instanceof MimeType){
                                 mimeTypes = new HashSet<>();
                                 mimeTypes.add((MimeType) arg);
+                            }else{
+                                mimeTypes = MimeType.allOf();
+                                max = (int) arg;
                             }
                         } else {
                             mimeTypes = MimeType.allOf();
                         }
 
-                        boolean haveSelectionSpecBuilderArg = args.length > 2;
-                        if (haveSelectionSpecBuilderArg) {
-                            builder = (SelectionSpecBuilder) args[2];
+                        SelectionSpecBuilder builder = matisse.choose(mimeTypes);
 
-                            Class<? extends SelectionSpecBuilder> builderClass = builder.getClass();
-                            Field matisseField = builderClass.getDeclaredField("mMatisse");
-                            matisseField.setAccessible(true);
-                            matisseField.set(builder, matisse);
-                        } else {
-                            builder = matisse.choose(mimeTypes);
-
-                            builder.countable(true)
-                                    .maxSelectable(9)
-                                    .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-                                    .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
-                                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                                    .thumbnailScale(0.85f)
-                                    .imageEngine(new GlideEngine());
+                        boolean isHaveMaxCount = args.length > 2;
+                        if (isHaveMaxCount) {
+                            max = (int) args[2];
                         }
+
+                        builder.countable(true)
+                                .maxSelectable(max)
+                                .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+                                .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
+                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                                .thumbnailScale(0.85f)
+                                .imageEngine(new GlideEngine());
                         supportFragment.forResult(builder);
 
                         return BUS.filter(supportFragment.getRequestCode())

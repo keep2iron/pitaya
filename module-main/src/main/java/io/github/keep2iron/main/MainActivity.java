@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         IPhotoSelector photoService = Pitaya.createPhotoService(IPhotoSelector.class);
-        photoService.requestPhotoSelector(this)
+        photoService.requestPhotoSelector(this,4)
                 .subscribe(new Consumer<List<Uri>>() {
                     @Override
                     public void accept(List<Uri> uris) throws Exception {

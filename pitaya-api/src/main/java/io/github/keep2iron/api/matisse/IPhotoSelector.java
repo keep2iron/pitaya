@@ -27,24 +27,33 @@ public interface IPhotoSelector {
      */
     Observable<List<Uri>> requestPhotoSelector(Activity activity);
 
+    /**
+     * 启动图片选择器，一切按默认选择项设置
+     *
+     * @param activity 启动的Activity
+     * @param maxCount 选择的最大数量
+     * @return List<Uri> 图片的uri集合
+     */
+    Observable<List<Uri>> requestPhotoSelector(Activity activity, int maxCount);
+
 
     /**
      * 启动图片选择器
      *
      * @param activity 启动的Activity
      * @param type     选择的类型
-     * @param builder  选择图片时的构建器
+     * @param maxCount 选择的最大数量
      * @return List<Uri> 图片的uri集合
      */
-    Observable<List<Uri>> requestPhotoSelector(Activity activity, MimeType type, SelectionSpecBuilder builder);
+    Observable<List<Uri>> requestPhotoSelector(Activity activity, MimeType type, int maxCount);
 
     /**
      * 启动图片选择器
      *
      * @param activity 启动的Activity
      * @param types    选择的类型集合
-     * @param builder  图片的构建器
+     * @param maxCount 选择的最大数量
      * @return List<Uri> 图片的uri集合
      */
-    Observable<List<Uri>> requestPhotoSelector(Activity activity, Set<MimeType> types, SelectionSpecBuilder builder);
+    Observable<List<Uri>> requestPhotoSelector(Activity activity, Set<MimeType> types, int maxCount);
 }
