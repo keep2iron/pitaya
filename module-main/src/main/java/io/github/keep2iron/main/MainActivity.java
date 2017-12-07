@@ -6,6 +6,10 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +27,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.github.keep2iron.api.Pitaya;
+import io.github.keep2iron.api.RequestWrapper;
+import io.github.keep2iron.api.ResultEventBus;
 import io.github.keep2iron.api.ResultWrapper;
+import io.github.keep2iron.api.fragment.SupportFragment;
 import io.github.keep2iron.api.matisse.GifSizeFilter;
 import io.github.keep2iron.api.matisse.IPhotoSelector;
 import io.github.keep2iron.route.RouteApi;
@@ -46,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RouteApi routeApi = Pitaya.create(RouteApi.class);
-        routeApi.requestTestModuleMainActivity(123456);
-
         ARouter.getInstance().inject(this);
         Toast.makeText(this, "" + test, Toast.LENGTH_LONG).show();
 
@@ -56,16 +60,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 RouteApi routeApi = Pitaya.create(RouteApi.class);
+                routeApi.requestTestModuleMainActivity(123, MainActivity.this);
 
-                routeApi.requestTestModule(123456, MainActivity.this)
-                        .subscribe(new Consumer<ResultWrapper>() {
-                            @Override
-                            public void accept(ResultWrapper resultWrapper) throws Exception {
-                                Toast.makeText(MainActivity.this, resultWrapper + "", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                ARouter.getInstance()
+                        .build("/main/main_activity")
+                        .withTransition(R.anim.anim_alpha_trans_in, R.anim.anim_alpha_trans_out)
+                        .navigation(MainActivity.this);
+
+//                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+//                startActivityForResult(intent, 0);
+//                overridePendingTransition(R.anim.anim_alpha_trans_in, R.anim.anim_alpha_trans_out);
+
+//                routeApi.requestTestModule(123456, MainActivity.this)
+//                        .subscribe(new Consumer<ResultWrapper>() {
+//                            @Override
+//                            public void accept(ResultWrapper resultWrapper) throws Exception {
+//                                Toast.makeText(MainActivity.this, resultWrapper + "", Toast.LENGTH_LONG).show();
+//                            }
+//                        });
             }
         });
+
 
 //        IPhotoSelector photoService = Pitaya.createPhotoService(IPhotoSelector.class);
 //        photoService.requestPhotoSelector(this,4)
@@ -87,5 +102,11 @@ public class MainActivity extends AppCompatActivity {
 //                .thumbnailScale(0.85f)
 //                .imageEngine(new GlideEngine())
 //                .forResult(123);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.anim_alpha_trans_in, R.anim.anim_alpha_trans_out);
     }
 }

@@ -32,6 +32,7 @@ import io.github.keep2iron.api.matisse.GifSizeFilter;
 import io.github.keep2iron.api.matisse.IPhotoSelector;
 import io.github.keep2iron.api.matisse.MatisseSupportFragment;
 import io.github.keep2iron.pitaya.annntation.Extra;
+import io.github.keep2iron.pitaya.annntation.RouteAnim;
 import io.github.keep2iron.pitaya.annntation.RouteUri;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
@@ -60,6 +61,8 @@ public class Pitaya {
                             throw new IllegalArgumentException("your mast add @RouteUri in your method and not null or empty....");
                         }
 
+                        RouteAnim anim = method.getAnnotation(RouteAnim.class);
+
                         if (method != null && args != null && method.getParameterAnnotations().length != args.length) {
                             throw new IllegalArgumentException("you must sure parameter annotation size == args size");
                         }
@@ -67,13 +70,29 @@ public class Pitaya {
                         String route = uri.path();
                         Postcard postcard = ARouter.getInstance()
                                 .build(route);
-
+                        if (anim != null) {
+                            postcard.withTransition(anim.inAnim(), anim.outAnim());
+                        }
                         Activity activity = buildPostcard(postcard, method, args);
-                        if (activity != null) {
+                        if (anim != null && activity == null) {
+                            throw new IllegalArgumentException("please add @Extra(isActivity) Activity activity Parameter in your XService interface,if not anim don't effect");
+                        }
+
+                        Class<?> returnClass = method.getReturnType();
+
+                        if (activity != null && returnClass.equals(Observable.class)) {
+                            if (anim != null) {
+                                throw new IllegalArgumentException("now not support with @RouteAnim with Observable<ResultWrapper>");
+                            }
+
                             int requestCode = uri.requestCode() == -1 ? DEFAULT_REQUEST_CODE : uri.requestCode();
                             return startActivityForResult(activity, postcard, requestCode);
                         } else {
-                            postcard.navigation();
+                            if (activity != null) {
+                                postcard.navigation(activity);
+                            } else {
+                                postcard.navigation();
+                            }
                         }
 
                         return Observable.empty();
@@ -92,10 +111,13 @@ public class Pitaya {
             transaction.replace(android.R.id.content, fragment);
             transaction.commitAllowingStateLoss();
         } else {
-            AppFragment fragment = AppFragment.getInstance(wrapper, BUS);
-            android.app.FragmentManager manager = activity.getFragmentManager();
-            android.app.FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(android.R.id.content, fragment).commitAllowingStateLoss();
+            /*
+             *   AppFragment fragment = AppFragment.getInstance(wrapper, BUS);
+             * android.app.FragmentManager manager = activity.getFragmentManager();
+             * android.app.FragmentTransaction transaction = manager.beginTransaction();
+             * transaction.replace(android.R.id.content, fragment).commitAllowingStateLoss();
+             */
+            throw new IllegalArgumentException("your should extends FragmentActivity.");
         }
 
         return BUS.filter(requestCode);
@@ -137,9 +159,6 @@ public class Pitaya {
         if (args == null || args.length == 0) {
             return null;
         }
-
-        Class<?> returnClass = method.getReturnType();
-
         Activity activity = null;
 
         for (int i = 0; i < args.length; i++) {
@@ -172,11 +191,6 @@ public class Pitaya {
                 activity = (Activity) argument;
             }
         }
-
-        if (activity != null && !returnClass.equals(Observable.class)) {
-            throw new IllegalArgumentException(method.getName() + "'s return type must be Observable<ResultWrapper>");
-        }
-
 
         return activity;
     }

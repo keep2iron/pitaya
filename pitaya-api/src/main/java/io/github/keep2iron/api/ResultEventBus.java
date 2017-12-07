@@ -13,6 +13,8 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class ResultEventBus {
 
+    private volatile static ResultEventBus BUS;
+
     private PublishSubject<ResultWrapper> mSubject = PublishSubject.create();
 
     private ResultEventBus() {
@@ -32,6 +34,14 @@ public class ResultEventBus {
     }
 
     public static ResultEventBus getInstance() {
-        return new ResultEventBus();
+        if(BUS == null){
+            synchronized (ResultEventBus.class){
+                if(BUS == null){
+                    BUS = new ResultEventBus();
+                }
+            }
+        }
+
+        return BUS;
     }
 }
