@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.zhihu.matisse.Matisse;
@@ -36,13 +37,20 @@ import io.reactivex.functions.Consumer;
 @Route(path = "/main/main_activity")
 public class MainActivity extends AppCompatActivity {
 
+    @Autowired
+    int test;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        RouteApi routeApi = Pitaya.create(RouteApi.class);
+        routeApi.requestTestModuleMainActivity(123456);
+
         ARouter.getInstance().inject(this);
+        Toast.makeText(this, "" + test, Toast.LENGTH_LONG).show();
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,15 +67,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        IPhotoSelector photoService = Pitaya.createPhotoService(IPhotoSelector.class);
-        photoService.requestPhotoSelector(this,4)
-                .subscribe(new Consumer<List<Uri>>() {
-                    @Override
-                    public void accept(List<Uri> uris) throws Exception {
-                        Log.e("tag", "uris " + uris);
-                        Log.e("tag", "uris " + uris.size());
-                    }
-                });
+//        IPhotoSelector photoService = Pitaya.createPhotoService(IPhotoSelector.class);
+//        photoService.requestPhotoSelector(this,4)
+//                .subscribe(new Consumer<List<Uri>>() {
+//                    @Override
+//                    public void accept(List<Uri> uris) throws Exception {
+//                        Log.e("tag", "uris " + uris);
+//                        Log.e("tag", "uris " + uris.size());
+//                    }
+//                });
 
 //        Matisse.from(MainActivity.this)
 //                .choose(MimeType.allOf())

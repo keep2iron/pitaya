@@ -173,7 +173,7 @@ public class Pitaya {
             }
         }
 
-        if (!returnClass.equals(Observable.class)) {
+        if (activity != null && !returnClass.equals(Observable.class)) {
             throw new IllegalArgumentException(method.getName() + "'s return type must be Observable<ResultWrapper>");
         }
 
@@ -230,10 +230,10 @@ public class Pitaya {
                             Object arg = args[1];
                             if (arg instanceof Set) {
                                 mimeTypes = (Set<MimeType>) arg;
-                            } else if(arg instanceof MimeType){
+                            } else if (arg instanceof MimeType) {
                                 mimeTypes = new HashSet<>();
                                 mimeTypes.add((MimeType) arg);
-                            }else{
+                            } else {
                                 mimeTypes = MimeType.allOf();
                                 max = (int) arg;
                             }

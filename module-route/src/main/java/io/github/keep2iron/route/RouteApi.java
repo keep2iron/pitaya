@@ -18,7 +18,7 @@ public interface RouteApi {
      *
      */
     @RouteUri(path = MODULE_MAIN.Route.MAIN_ACTIVITY)
-    void requestTestModuleMainActivity();
+    void requestTestModuleMainActivity(@Extra(name = MODULE_MAIN.Extra.EXTRA_INT_TEST) int test);
 
     /**
      * 跳转testModule的MainActivity

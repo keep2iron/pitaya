@@ -8,5 +8,6 @@ public class MODULE_MAIN {
   }
 
   public class Extra {
+    public static final String EXTRA_INT_TEST = "test";
   }
 }
