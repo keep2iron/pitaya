@@ -29,6 +29,7 @@ import java.util.Set;
 import io.github.keep2iron.api.fragment.AppFragment;
 import io.github.keep2iron.api.fragment.SupportFragment;
 import io.github.keep2iron.api.matisse.GifSizeFilter;
+import io.github.keep2iron.api.matisse.Glide4Engine;
 import io.github.keep2iron.api.matisse.IPhotoSelector;
 import io.github.keep2iron.api.matisse.MatisseSupportFragment;
 import io.github.keep2iron.pitaya.annntation.Extra;
@@ -268,7 +269,7 @@ public class Pitaya {
                                 .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
                                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                                 .thumbnailScale(0.85f)
-                                .imageEngine(new GlideEngine());
+                                .imageEngine(new Glide4Engine());
                         supportFragment.forResult(builder);
 
                         return BUS.filter(supportFragment.getRequestCode())

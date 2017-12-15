@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         ARouter.getInstance().inject(this);
         Toast.makeText(this, "" + test, Toast.LENGTH_LONG).show();
 
+        IPhotoSelector photoService = Pitaya.createPhotoService(IPhotoSelector.class);
+        photoService.requestPhotoSelector(this);
+
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
