@@ -12,6 +12,8 @@ import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 
+import java.util.ArrayList;
+
 /**
  * @author keep2iron <a href="http://keep2iron.github.io">Contract me.</a>
  * @version 1.0

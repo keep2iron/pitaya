@@ -21,7 +21,9 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -112,12 +114,6 @@ public class Pitaya {
             transaction.replace(android.R.id.content, fragment);
             transaction.commitAllowingStateLoss();
         } else {
-            /*
-             *   AppFragment fragment = AppFragment.getInstance(wrapper, BUS);
-             * android.app.FragmentManager manager = activity.getFragmentManager();
-             * android.app.FragmentTransaction transaction = manager.beginTransaction();
-             * transaction.replace(android.R.id.content, fragment).commitAllowingStateLoss();
-             */
             throw new IllegalArgumentException("your should extends FragmentActivity.");
         }
 
@@ -146,6 +142,8 @@ public class Pitaya {
             postcard.withChar(key, (Character) argument);
         } else if (argument.getClass() == String.class) {
             postcard.withString(key, (String) argument);
+        } else {
+            postcard.withObject(key, argument);
         }
     }
 

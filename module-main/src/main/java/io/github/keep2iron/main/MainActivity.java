@@ -23,6 +23,7 @@ import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.filter.Filter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,8 +45,8 @@ import io.reactivex.functions.Consumer;
 @Route(path = "/main/main_activity")
 public class MainActivity extends AppCompatActivity {
 
-    @Autowired
-    int test;
+    @Autowired int test;
+    @Autowired(name = "parcelable") ArrayList<TestParcelable> testParcelables;
 
 
     @Override
@@ -55,19 +56,19 @@ public class MainActivity extends AppCompatActivity {
 
         ARouter.getInstance().inject(this);
         Toast.makeText(this, "" + test, Toast.LENGTH_LONG).show();
-
-        IPhotoSelector photoService = Pitaya.createPhotoService(IPhotoSelector.class);
-        photoService.requestPhotoSelector(this);
+        Log.e("test","" + testParcelables);
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RouteApi routeApi = Pitaya.create(RouteApi.class);
                 routeApi.requestTestModuleMainActivity(123, MainActivity.this);
-
+                ArrayList<TestParcelable> testParcelables = new ArrayList<>();
+                testParcelables.add(new TestParcelable(1,""));
                 ARouter.getInstance()
                         .build("/main/main_activity")
                         .withTransition(R.anim.anim_alpha_trans_in, R.anim.anim_alpha_trans_out)
+                        .withObject("parcelable", testParcelables)
                         .navigation(MainActivity.this);
 
 //                Intent intent = new Intent(MainActivity.this, MainActivity.class);
