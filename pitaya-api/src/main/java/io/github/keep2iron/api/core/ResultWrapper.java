@@ -1,4 +1,4 @@
-package io.github.keep2iron.api;
+package io.github.keep2iron.api.core;
 
 import android.content.Intent;
 
@@ -10,7 +10,6 @@ import java.io.Serializable;
  * @since 2017/11/14 16:02
  */
 public class ResultWrapper implements Serializable{
-
     public Intent mIntent;
     public int mRequestCode;
     public int mResultCode;

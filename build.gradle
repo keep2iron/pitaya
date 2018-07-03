@@ -2,7 +2,13 @@
 
 buildscript {
     apply from:'./version.gradle'
-    addRepos(repositories)
+    repositories {
+        google()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
     dependencies {
         classpath deps.android_gradle_plugin
         classpath deps.gradle_maven_plugin
@@ -10,5 +16,10 @@ buildscript {
 }
 
 allprojects {
-    addRepos(repositories)
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
 }

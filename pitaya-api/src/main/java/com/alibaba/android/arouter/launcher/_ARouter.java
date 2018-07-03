@@ -34,6 +34,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
 /**
  * ARouter core (Facade patten)
  *
@@ -364,10 +366,8 @@ final class _ARouter {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 }
 
-                // Navigation in main looper.
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
+                AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                    @Override public void run() {
                         if (requestCode > 0) {  // Need start for result
                             ActivityCompat.startActivityForResult((Activity) currentContext, intent, requestCode, postcard.getOptionsBundle());
                         } else {
@@ -383,7 +383,6 @@ final class _ARouter {
                         }
                     }
                 });
-
                 break;
             case PROVIDER:
                 return postcard.getProvider();

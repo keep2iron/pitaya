@@ -1,4 +1,4 @@
-package io.github.keep2iron.api;
+package io.github.keep2iron.api.service;
 
 import android.content.Context;
 

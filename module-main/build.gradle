@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "io.github.keep2iron.aroute"
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -38,10 +38,11 @@ dependencies {
     implementation project(':module-test')
     implementation project(':module-route')
 
-    compile 'com.github.bumptech.glide:glide:4.0.0'
-    compile 'com.google.code.gson:gson:2.8.2'
+    implementation project(path: ':pitaya-annotation')
+    implementation project(path: ':pitaya-api')
+    annotationProcessor project(path: ':pitaya-compiler')
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }
 
-apply from: '../version.gradle'
-ext.addPitaya(dependencies, project)

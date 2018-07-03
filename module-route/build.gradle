@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -21,6 +21,8 @@ android {
 }
 
 dependencies {
-    compileOnly project(':pitaya-api')
-    implementation project(':pitaya-annotation')
+    implementation deps.rxjava2
+
+    implementation project(path: ':pitaya-annotation')
+    implementation project(path: ':pitaya-api')
 }

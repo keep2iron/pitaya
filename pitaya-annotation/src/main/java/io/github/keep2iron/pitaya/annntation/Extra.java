@@ -16,6 +16,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Extra {
     String name() default "";
-
-    boolean isActivity() default false;
 }

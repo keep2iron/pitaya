@@ -14,6 +14,8 @@ import com.alibaba.android.arouter.launcher.ARouter;
 
 import java.util.ArrayList;
 
+import io.github.keep2iron.api.Pitaya;
+
 /**
  * @author keep2iron <a href="http://keep2iron.github.io">Contract me.</a>
  * @version 1.0
@@ -22,25 +24,25 @@ import java.util.ArrayList;
 @Route(path = "/test/test_activity")
 public class TestActivity extends Activity {
 
-    @Autowired
-    int requestCode;
+	@Autowired
+	int requestCode;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+	@Override
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_test);
+		Pitaya.bind(this);
 
-        ARouter.getInstance().inject(this);
-        findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("test_code", 123456);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
+		findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.putExtra("test_code", 123456);
+				setResult(RESULT_OK, intent);
+				finish();
+			}
+		});
 
-        Toast.makeText(this, "requestCode : " + requestCode, Toast.LENGTH_SHORT).show();
-    }
+		Toast.makeText(this, "requestCode : " + requestCode, Toast.LENGTH_SHORT).show();
+	}
 }
