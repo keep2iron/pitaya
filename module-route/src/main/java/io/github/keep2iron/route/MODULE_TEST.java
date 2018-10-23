@@ -8,6 +8,8 @@ public class MODULE_TEST {
   }
 
   public class Extra {
+    public static final String EXTRA_STRING_TEST_STRING = "testString";
+
     public static final String EXTRA_INT_REQUEST_CODE = "requestCode";
   }
 }

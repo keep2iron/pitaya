@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent(MainActivity.this, MainActivity.class);
 //                startActivityForResult(intent, 0);
 
-				routeApi.requestTestModule(123456)
+				routeApi.requestTestModule(123456,"1231321")
 						.subscribe(new RouteSubscriber() {
 							@Override public void onActivityResult(Intent intent, int requestCode, int resultCode) {
 								Toast.makeText(MainActivity.this, intent + "" + " requestCode :" + requestCode + " resultCode : " + resultCode, Toast.LENGTH_LONG).show();

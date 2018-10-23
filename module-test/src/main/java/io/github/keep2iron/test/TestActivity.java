@@ -27,6 +27,9 @@ public class TestActivity extends Activity {
 	@Autowired
 	int requestCode;
 
+	@Autowired
+	String testString;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,6 +46,6 @@ public class TestActivity extends Activity {
 			}
 		});
 
-		Toast.makeText(this, "requestCode : " + requestCode, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "requestCode : " + requestCode + " testString : " + testString, Toast.LENGTH_SHORT).show();
 	}
 }
